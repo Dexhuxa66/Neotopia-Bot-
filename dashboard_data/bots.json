@@ -1,0 +1,14 @@
+{
+  "bots": [
+    {
+      "id": "default",
+      "name": "Guest_FABQQ",
+      "world": "778839",
+      "account_file": "/data/data/com.termux/files/home/neo2/guest_account.json",
+      "cmd_file": "/data/data/com.termux/files/home/neo2/stay_cmd.txt",
+      "state_file": "/data/data/com.termux/files/home/neo2/bot_state.json",
+      "log_file": "/data/data/com.termux/files/home/neo2/stay_world.log",
+      "managed": false
+    }
+  ]
+}

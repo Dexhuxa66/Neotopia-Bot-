@@ -1,0 +1,29 @@
+# Credentials & Accounts
+guest_account*.json
+guest_account.json
+accounts.json
+latest_account.json
+magic_link.txt
+idtoken.txt
+refresh_token.txt
+uid.txt
+headers.txt
+
+# Runtime State & Logs
+stay_cmd.txt
+bot_state.json
+*.log
+api_probe.txt
+
+# Browser Profiles & Screenshots
+chrome-profile-neo/
+chrome-profile/
+*.jpg
+*.png
+
+# Python & pytest Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.DS_Store

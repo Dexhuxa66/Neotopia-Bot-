@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neotopia Bot Dashboard</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Neotopia Bot Dashboard</h1>
+      <p class="muted">Kontrol bot, map live, dan aksi world.</p>
+    </div>
+    <div class="toolbar">
+      <button id="generateBtn" class="primary">Generate Guest</button>
+      <button id="startBtn">Start</button>
+      <button id="stopBtn" class="danger">Stop</button>
+      <select id="botSelect" aria-label="Bot aktif"></select>
+      <a id="captchaLink" class="primary" href="/static/captcha.html" target="_blank">Captcha</a>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <section class="card status-card">
+        <h2>Bot aktif</h2>
+        <div id="botSummary" class="summary">Belum ada bot.</div>
+      </section>
+
+      <section class="card">
+        <h2>Aksi</h2>
+        <form id="breakForm" class="action-form">
+          <h3>Break</h3>
+          <div class="row"><input name="x" type="number" placeholder="x" required><input name="y" type="number" placeholder="y" required></div>
+          <div class="row"><input name="max" type="number" value="30" min="1"><input name="delay" type="number" value="0.16" step="0.01" min="0.08"></div>
+          <button>Break tile</button>
+        </form>
+        <form id="placeForm" class="action-form">
+          <h3>Place</h3>
+          <div class="row"><input name="x" type="number" placeholder="x" required><input name="y" type="number" placeholder="y" required></div>
+          <input name="blockType" value="DIRT" placeholder="block type" required>
+          <button>Place block</button>
+        </form>
+        <form id="dropForm" class="action-form">
+          <h3>Drop item dari inventory</h3>
+          <div class="row"><select id="dropItemType" name="itemType" required><option value="">Inventory kosong</option></select><input name="count" type="number" value="1" min="1" required></div>
+          <button>Drop item</button>
+        </form>
+        <form id="pickupForm" class="action-form">
+          <h3>Collect item dekat bot</h3>
+          <select id="pickupId" name="id"><option value="">Cari item terdekat</option></select>
+          <button>Collect</button>
+        </form>
+        <form id="msgForm" class="action-form">
+          <h3>Msg / bicara</h3>
+          <input name="text" maxlength="200" placeholder="Pesan ke world" required>
+          <button>Kirim chat</button>
+        </form>
+        <form id="playerForm" class="action-form">
+          <h3>Goto player</h3>
+          <input name="name" placeholder="Nama player" required>
+          <button>Goto player</button>
+        </form>
+        <form id="moveForm" class="action-form">
+          <h3>Move</h3>
+          <input name="dx" type="number" placeholder="dx pixel" required>
+          <button>Move</button>
+        </form>
+        <form id="planForm" class="action-form">
+          <h3>Preview path (read-only)</h3>
+          <div class="row"><input name="x" type="number" placeholder="x" required><input name="y" type="number" placeholder="y" required></div>
+          <button type="button" id="planPreviewBtn">Preview</button>
+          <button type="submit">Execute</button>
+        </form>
+      </section>
+      <div id="toast" class="toast" role="status"></div>
+    </aside>
+
+    <section class="map-panel card">
+      <div class="map-header">
+        <div>
+          <h2>World map</h2>
+          <p id="tileInfo" class="muted">Hover tile untuk koordinat.</p>
+        </div>
+        <div class="map-help">Klik tile = findpath · Wheel = zoom · drag = pan</div>
+      </div>
+      <div id="canvasWrap" class="canvas-wrap">
+        <canvas id="mapCanvas"></canvas>
+      </div>
+      <div class="legend">
+        <span><i class="swatch air"></i>air</span>
+        <span><i class="swatch solid"></i>block</span>
+        <span><i class="dot bot"></i>bot</span>
+        <span><i class="dot player"></i>player</span>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

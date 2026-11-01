@@ -1,0 +1,203 @@
+<!-- This unity webgl template is based on "A better Unity WebGL template" by greggman: https://github.com/greggman/better-unity-webgl-template -->
+<!-- Also based on code by John Sharp: https://lyceum-allotments.github.io/2016/06/emscripten-and-sdl2-tutorial-part-7-get-naked-owl/  -->
+<!-- Tweaks by Seth A. Robinson (rtsoft.com) - note, this is sort of a mess because I haven't fully intregrated the unity/emscripten stuff at this time.  It works though -->
+
+<script>
+   var appName = "ReGrowtopia";	
+</script>
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+	<link rel="apple-touch-icon" href="/icon-180.png">
+	<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+	<link rel="icon" href="/favicon.ico">
+	
+	<!-- iOS -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+	<!-- Android -->
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="theme-color" content="#000000">
+  
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+    <meta charset="utf-8">
+    <title>Creative Growtopia</title>
+      <style>
+      html {
+        box-sizing: border-box;
+      }
+      *, *:before, *:after {
+        box-sizing: inherit;
+      }
+      body {
+        margin: 0;
+        background: #444;
+      }
+      #gameContainer {
+        width: 100vw;
+        height: 100vh;
+      }
+      canvas.emscripten {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .logo {
+          display: block;
+          width: max-width: 100vw;
+          height: max-height: 70vh;
+          z-index: -1;
+      }
+
+      .progress {
+          margin: 1.5em;
+          border: 1px solid white;
+          width: 50vw;
+          display: none;
+      }
+      .progress .full {
+          margin: 2px;
+          background: white;
+          height: 1em;
+          transform-origin: top left;
+      }
+
+      .loaderStyle {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      #loader {
+        pointer-events:none;
+      }
+	  #errortext {
+		color: red;
+		font-weight: 900;
+		font-size: 24;
+	  }
+	  .overlayBackground {
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background: #000;
+		opacity: 0.5;
+	  }
+
+			.loadingtext {
+ 				 color: white;
+        align-items: center;
+        justify-content: center;
+		z-index: 99;
+      }
+      
+      .spinner,
+      .spinner:after {
+        border-radius: 50%;
+        width: 5em;
+        height: 5em;
+      }
+      .spinner {
+        margin: 10px;
+        font-size: 10px;
+        position: relative;
+        text-indent: -9999em;
+        border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+        border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+        border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+        border-left: 1.1em solid #ffffff;
+        transform: translateZ(0);
+        animation: spinner-spin 1.1s infinite linear;
+        
+      }
+      @keyframes spinner-spin 
+      {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      
+	  
+	.textInputContainer {
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		z-index: -9999;
+	}
+	.textInput {
+		opacity: 0;
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		margin: 0;
+		border: 0;
+	}
+	.startButton {
+		z-index: 99;
+	}
+	#hideAll {
+		z-index: 9999;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+		background-color: #000;
+	}
+    </style>
+  </head>
+
+  <body>
+		<div id="loader" class="loaderStyle">
+			<img class="logo" src="WebLoaderData/logo.png">
+			<div class="spinner"></div>
+			<div class="loadingtext">Setting up...</div>
+			
+			<div class="progress"><div class="full"></div></div>
+		</div>
+		<div id="interstitial" class="loaderStyle">
+			<img class="logo" src="WebLoaderData/logo.png">
+			<br/>
+			<div class="loadingtext" id="errortext"></div>
+			<br/>
+			<div class="loadingtext">You will need to rotate the device to landscape mode. Once you've done that:</div>
+			<br/>
+			<button class="startButton" onclick="dismissInterstitial()">Start Creative Growtopia!</button>
+		</div>
+		<div id="enterFullScreenPopup" class="loaderStyle">
+			<div class="overlayBackground"></div>
+			<div class="loadingtext" id="errortext">Please ensure your device is in landscape mode, then enter fullscreen mode.</div>
+			<br/>
+			<button class="startButton" onclick="enterFullscreenMode()">Enter full-screen mode</button>
+		</div>
+		<div id="gameContainer">
+			<div class="textInputContainer">
+				<input class="textInput" id="textInput" type="text" enterkeyhint="done"
+					   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /> <!-- aria-hidden="true"/> -->
+			</div>
+			<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+		</div>
+		<div id="hideAll"></div>
+
+	<!-- <script src="WebLoaderData/RTLoader.js"> </script> -->
+	<script src="WebLoaderData/GameInterstitial.js"> </script>
+  <script>window.__CF$cv$params={r:'a5013f2e0a1681d8',t:'MTc5MjkzMTU3Ng==',u:'01a1730cb8e477488ec594d2a6a24cea',ut:'CtSmbk8PPdFidcCxXvqOBg6cWLRHHCLVvLPiGlq7SsQ-1792931576-1.2.1.1-69YFlDiYzMNXVwyZ3EW0tL_0CFhKVveqUZOdGUCBN5gnPrXIECFlczp7_cVThyyTUwINeBwSCNRLz21dPlZjMJQ8CgySt9Q.oeCPgJGzWFE',i:60};(function(){if(!document.body)return;var s=document.createElement('script');s.src='/cdn-cgi/challenge-platform/scripts/precursor/main.js';document.head.appendChild(s);})();</script></body>
+ 
+</html>

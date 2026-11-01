@@ -1,0 +1,7 @@
+fastapi>=0.115
+uvicorn[standard]>=0.30
+websockets>=13
+websocket-client>=1.8
+
+# Development check
+pytest>=8
