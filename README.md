@@ -2,6 +2,11 @@
 
 An automation bot, control panel, and management suite for **Neotopia**, optimized for Termux (Android) and Linux environments.
 
+
+---
+
+##ALL NEED FIXX!!!!!!!!!!!!
+
 ---
 
 ## Features
